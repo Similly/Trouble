@@ -125,8 +125,8 @@ public class Main {
                 tempFields[i].setEmpty(true);
                 if (!tempFields[(i + steps) % tempFields.length].isEmpty()){
                     tempId = tempFields[(i + steps) % tempFields.length].getPegOnField();
-                    tempPegs = players[turn % amountOfPlayers].getPegs();
-                    tempHome = players[turn % amountOfPlayers].getHome();
+                    tempPegs = players[Character.getNumericValue(tempId.charAt(0))-1].getPegs();
+                    tempHome = players[Character.getNumericValue(tempId.charAt(0))-1].getHome();
 
                     for (int j = 0 ; j < tempPegs.length ; j++){
                         if (tempPegs[j].getId().equals(tempId)){
@@ -135,11 +135,14 @@ public class Main {
                     }
 
                     tempHome.addPeg(tempId);
-                    players[turn % amountOfPlayers].setPegs(tempPegs);
-                    players[turn % amountOfPlayers].setHome(tempHome);
+                    tempFields[(i + steps) % tempFields.length].setPegOnField(id);
+                    tempFields[(i + steps) % tempFields.length].setEmpty(false);
+                    players[Character.getNumericValue(tempId.charAt(0))-1].setPegs(tempPegs);
+                    players[Character.getNumericValue(tempId.charAt(0))-1].setHome(tempHome);
+                } else if (tempFields[(i + steps) % tempFields.length].isEmpty()){
+                    tempFields[(i + steps) % tempFields.length].setPegOnField(id);
+                    tempFields[(i + steps) % tempFields.length].setEmpty(false);
                 }
-                tempFields[(i + steps) % tempFields.length].setPegOnField(id);
-                tempFields[(i + steps) % tempFields.length].setEmpty(false);
                 //System.out.println(tempFields[(i+steps)%tempFields.length].getPegOnField() + " " + tempFields[(i+steps)%28].isEmpty() + " " + (i+steps)%28);
                 break;
             }
