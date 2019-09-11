@@ -59,15 +59,23 @@ public class Main {
         Field[] tempFields = board.getFields();
         Peg[] tempPegs = player.getPegs();
         Home tempHome = player.getHome();
+        Boolean pegLeftInHome = false;
 
         if(temp.equals(temp)){
             rolledNumber = dice.rollIt();
             System.out.println("You rolled a " + rolledNumber + "!");
         }
 
-        if (rolledNumber == 6){
+        for (int i = 0 ; i < player.getHome().getPegsIds().length ; i++) {
+            if (player.getHome().getPegsIds()[i] != null){
+                pegLeftInHome = true;
+                break;
+            }
+        }
+
+        if (pegLeftInHome && rolledNumber == 6){
             for (int i = 0 ; i < player.getHome().getPegsIds().length ; i++){
-                if (player.getHome().getPegsIds()[i] != null){
+                if (player.getHome().getPegsIds()[i] != null && tempFields[player.getStartingField()].isEmpty()){
                     tempFields[player.getStartingField()].setPegOnField(player.getHome().getPegsIds()[i]);
                     tempFields[player.getStartingField()].setEmpty(false);
 
@@ -80,6 +88,13 @@ public class Main {
                     tempHome.removePeg(i);
                     player.setHome(tempHome);
                     player.setPegs(tempPegs);
+                    break;
+                } else if(!tempFields[player.getStartingField()].isEmpty()){
+                    System.out.println("You starting field is occupied please move the peg on it.\n");
+                    int tempInt;
+                    tempInt = in0.nextInt();
+
+                    move(tempFields[player.getStartingField()].getPegOnField(),rolledNumber,tempFields );
                     break;
                 }
             }

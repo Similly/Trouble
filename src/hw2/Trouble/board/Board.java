@@ -23,13 +23,48 @@ public class Board {
     }
 
     public void printBoard(Player[] players){
-        for (int i = 0 ; i < fields.length ; i++) {
+        /*for (int i = 0 ; i < fields.length ; i++) {
             if(fields[i].isEmpty()){
                 System.out.print("(   )");
             } else {
                 System.out.print("(" + fields[i].getPegOnField() + ")");
             }
+        }*/
+        for (int i = 14 ; i < 22 ; i++) {
+            if (fields[i].isEmpty()) {
+                System.out.print("(   )");
+            } else {
+                System.out.print("(" + fields[i].getPegOnField() + ")");
+            }
         }
+
+        for (int i = 0 ; i < 6 ; i++){
+            System.out.println();
+
+            if (fields[13 - i].isEmpty()){
+                System.out.print("(   )");
+            } else {
+                System.out.print("(" + fields[13 - i].getPegOnField() + ")");
+            }
+
+            System.out.print("                              ");
+
+            if (fields[22 + i].isEmpty()){
+                System.out.print("(   )");
+            } else {
+                System.out.print("(" + fields[22 + i].getPegOnField() + ")");
+            }
+        }
+
+        System.out.println();
+        for (int i = 7 ; i > -1 ; i--) {
+            if (fields[i].isEmpty()) {
+                System.out.print("(   )");
+            } else {
+                System.out.print("(" + fields[i].getPegOnField() + ")");
+            }
+        }
+
         System.out.println("\n");
 
         for (int i = 0 ; i < players.length ; i++){
