@@ -66,52 +66,19 @@ public class Main {
             System.out.println("You rolled a " + rolledNumber + "!");
         }
 
-        for (int i = 0 ; i < player.getHome().getPegsIds().length ; i++) {
-            if (player.getHome().getPegsIds()[i] != null){
-                pegLeftInHome = true;
-                break;
-            }
-        }
+        pegLeftInHome = pegLeftInHome(player);
 
         if (pegLeftInHome && rolledNumber == 6){
-            for (int i = 0 ; i < player.getHome().getPegsIds().length ; i++){
-                if (player.getHome().getPegsIds()[i] != null && tempFields[player.getStartingField()].isEmpty()){
-                    tempFields[player.getStartingField()].setPegOnField(player.getHome().getPegsIds()[i]);
-                    tempFields[player.getStartingField()].setEmpty(false);
-
-                    for (int j = 0 ; j < tempPegs.length ; j++) {
-                        if (tempPegs[j].getId().equals(player.getHome().getPegsIds()[i])) {
-                            tempPegs[j].setState("r");
-                        }
-                    }
-
-                    tempHome.removePeg(i);
-                    player.setHome(tempHome);
-                    player.setPegs(tempPegs);
-                    break;
-                } else if(!tempFields[player.getStartingField()].isEmpty()){
-                    System.out.println("You starting field is occupied please move the peg on it.\n");
-                    int tempInt;
-                    tempInt = in0.nextInt();
-
-                    move(tempFields[player.getStartingField()].getPegOnField(),rolledNumber,tempFields );
-                    break;
-                }
-            }
-            players[turn%amountOfPlayers] = player;
-            board.setFields(tempFields);
+            tryPutNewPegOnBoard(player, tempFields, tempPegs, tempHome, rolledNumber);
         } else {
             tempFields = board.getFields();
             ArrayList<String> tempAvailablePegs = new ArrayList<>();
             int tempInt;
             boolean available = false;
 
-            for (int i = 0 ; i < player.getPegs().length ; i++){
-                if (player.getPegs()[i].getState().equals("r")){
-                    tempAvailablePegs.add(player.getPegs()[i].getId());
-                    available = true;
-                }
-            }
+            available = checkIfPlayerHasPegOnBoard(player);
+
+            tempAvailablePegs = getAvailablePegs(player);
 
             if (available){
                 System.out.println("Please choose one of the following Pegs by entering its' number.");
@@ -125,6 +92,10 @@ public class Main {
             }
         }
         board.printBoard(players);
+
+        if (rolledNumber == 6){
+            turn(player);
+        }
     }
 
     public static void move(String id, int steps, Field[] tempFields){
@@ -164,4 +135,107 @@ public class Main {
         }
         board.setFields(tempFields);
     }
+
+    public static boolean pegLeftInHome(Player player){
+        boolean pegLeftInHome = false;
+        for (int i = 0 ; i < player.getHome().getPegsIds().length ; i++) {
+            if (player.getHome().getPegsIds()[i] != null){
+                pegLeftInHome = true;
+                break;
+            }
+        }
+        return pegLeftInHome;
+    }
+
+    public static void tryPutNewPegOnBoard(Player player, Field[] tempFields, Peg[] tempPegs, Home tempHome, int rolledNumber){
+        for (int i = 0 ; i < player.getHome().getPegsIds().length ; i++){
+            if (player.getHome().getPegsIds()[i] != null && tempFields[player.getStartingField()].isEmpty()){
+                tempFields[player.getStartingField()].setPegOnField(player.getHome().getPegsIds()[i]);
+                tempFields[player.getStartingField()].setEmpty(false);
+
+                for (int j = 0 ; j < tempPegs.length ; j++) {
+                    if (tempPegs[j].getId().equals(player.getHome().getPegsIds()[i])) {
+                        tempPegs[j].setState("r");
+                    }
+                }
+
+                tempHome.removePeg(i);
+                player.setHome(tempHome);
+                player.setPegs(tempPegs);
+                break;
+            } else if(player.getHome().getPegsIds()[i] != null && !tempFields[player.getStartingField()].isEmpty()){
+                if(checkForOpponentPegs(player,tempFields[player.getStartingField()])){
+                    String tempPegId = tempFields[player.getStartingField()].getPegOnField();
+                    Player tempPlayer = players[Character.getNumericValue(tempPegId.charAt(0)) - 1];
+                    Peg[] tempPegs1 = tempPlayer.getPegs();
+                    Home tempHome1 = tempPlayer.getHome();
+
+                    tempFields[player.getStartingField()].setPegOnField("");
+                    tempFields[player.getStartingField()].setEmpty(true);
+
+                    for(int j = 0 ; j < tempPegs1.length ; j++){
+                        if (tempPegs1[j].getId().equals(tempPegId)){
+                            tempPegs1[j].setState("h");
+                            tempHome1.addPeg(tempPegId);
+                        }
+                    }
+
+                    tempPlayer.setHome(tempHome1);
+                    tempPlayer.setPegs(tempPegs1);
+                    players[tempPlayer.getId()-1] = tempPlayer;
+
+                    tempFields[player.getStartingField()].setEmpty(false);
+                    tempFields[player.getStartingField()].setPegOnField(player.getHome().getPegsIds()[i]);
+
+                    for (int j = 0 ; j < tempPegs.length ; j++) {
+                        if (tempPegs[j].getId().equals(player.getHome().getPegsIds()[i])) {
+                            tempPegs[j].setState("r");
+                        }
+                    }
+
+                    tempHome.removePeg(i);
+                    player.setHome(tempHome);
+                    player.setPegs(tempPegs);
+                    break;
+                } else {
+                    System.out.println("You starting field is occupied please move the peg on it.\n");
+                    int tempInt;
+                    tempInt = in0.nextInt();
+
+                    move(tempFields[player.getStartingField()].getPegOnField(), rolledNumber, tempFields);
+                    break;
+                }
+            }
+        }
+        players[turn%amountOfPlayers] = player;
+        board.setFields(tempFields);
+    }
+
+    public static boolean checkIfPlayerHasPegOnBoard(Player player){
+
+        for (int i = 0 ; i < player.getPegs().length ; i++){
+            if (player.getPegs()[i].getState().equals("r")){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static ArrayList<String> getAvailablePegs(Player player){
+        ArrayList<String> tempAvailablePegs = new ArrayList<>();
+
+        for (int i = 0 ; i < player.getPegs().length ; i++){
+            if (player.getPegs()[i].getState().equals("r")){
+                tempAvailablePegs.add(player.getPegs()[i].getId());
+            }
+        }
+
+        return tempAvailablePegs;
+    }
+
+    public static boolean checkForOpponentPegs(Player player, Field field){
+        return Character.getNumericValue(field.getPegOnField().charAt(0)) != player.getId();
+    }
+
 }
