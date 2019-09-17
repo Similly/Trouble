@@ -133,11 +133,8 @@ public class Main {
                     tempPegs1 = players[Character.getNumericValue(id.charAt(0))-1].getPegs();
                     tempFinish1 = players[Character.getNumericValue(id.charAt(0))-1].getFinish();
                     for (Peg peg : tempPegs1) {
-                        System.out.println(peg.getId());
-                        System.out.println(id);
                         if (peg.getId().equals(id)) {
                             peg.setTotalSteps(peg.getTotalSteps() + steps);
-                            System.out.println(peg.getTotalSteps());
                             if (peg.getTotalSteps() >= peg.getSTEPSTOGO()){
                                 peg.setState("f");
                                 //tempFields[(i + steps) % tempFields.length].setPegOnField("");
