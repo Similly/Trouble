@@ -26,7 +26,7 @@ public class Player {
         }
 
         for (int i = 0 ; i < pegs.length ; i++) {
-            pegs[i] = new Peg(this.id + "." + i);
+            pegs[i] = new Peg(this.id + "." + i, finishField);
         }
     }
 
