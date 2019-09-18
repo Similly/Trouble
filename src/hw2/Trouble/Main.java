@@ -117,37 +117,76 @@ public class Main {
         Home tempHome2;
         String tempId2;
 
-        boolean pegInHome = false;
+        int tempSteps;
+        int index;
+
+        boolean pegInFinish = false;
 
         for (int i = 0 ; i < board.getFields().length ; i++){
             //System.out.println(id + " " + i + " " + tempFields[i].getPegOnField());
 
             if(tempFields[i].getPegOnField().equals(id)){
-                tempFields[i].setPegOnField("");
-                tempFields[i].setEmpty(true);
+                //tempFields[i].setPegOnField("");
+                //tempFields[i].setEmpty(true);
                 if (!tempFields[(i + steps) % tempFields.length].isEmpty()){
-                    tempId2 = tempFields[(i + steps) % tempFields.length].getPegOnField();
-                    tempPegs2 = players[Character.getNumericValue(tempId2.charAt(0))-1].getPegs();
-                    tempHome2 = players[Character.getNumericValue(tempId2.charAt(0))-1].getHome();
+                    tempFields[i].setPegOnField("");
+                    tempFields[i].setEmpty(true);
 
                     tempPegs1 = players[Character.getNumericValue(id.charAt(0))-1].getPegs();
                     tempFinish1 = players[Character.getNumericValue(id.charAt(0))-1].getFinish();
                     for (Peg peg : tempPegs1) {
                         if (peg.getId().equals(id)) {
+                            tempSteps = peg.getTotalSteps() + steps;
                             peg.setTotalSteps(peg.getTotalSteps() + steps);
-                            if (peg.getTotalSteps() >= peg.getSTEPSTOGO()){
-                                peg.setState("f");
+                            if (tempSteps > peg.getSTEPSTOGO()){
+                                peg.setTotalSteps(peg.getSTEPSTOGO());
+                                index = tempSteps - peg.getTotalSteps() - 1;
+
+                                if(index < 4){
+                                    for (int j = 0; j < players[Character.getNumericValue(id.charAt(0))-1].getFinish().getPegsIds().length; j++){
+                                        if(players[Character.getNumericValue(id.charAt(0))-1].getFinish().getPegsIds()[j] == null && j == index){
+                                            peg.setState("f");
+                                            //tempFields[players[Character.getNumericValue(id.charAt(0))-1].getFinishField()].setPegOnField("");
+                                            //tempFields[players[Character.getNumericValue(id.charAt(0))-1].getFinishField()].setEmpty(true);
+
+                                            tempFinish1.addPeg(id,index);
+                                            pegInFinish = true;
+                                        } else if(players[Character.getNumericValue(id.charAt(0))-1].getFinish().getPegsIds()[j] != null && j == index){
+                                            tempId2 = tempFields[players[Character.getNumericValue(id.charAt(0))-1].getFinishField()].getPegOnField();
+
+                                            if(!tempId2.equals("")){
+                                                tempPegs2 = players[Character.getNumericValue(tempId2.charAt(0))-1].getPegs();
+                                                tempHome2 = players[Character.getNumericValue(tempId2.charAt(0))-1].getHome();
+
+                                                for (Peg peg1 : tempPegs2) {
+                                                    if (peg1.getId().equals(tempId2)) {
+                                                        peg1.setState("h");
+                                                        peg1.setTotalSteps(0);
+                                                    }
+                                                }
+                                                tempHome2.addPeg(tempId2);
+
+                                                players[Character.getNumericValue(tempId2.charAt(0))-1].setPegs(tempPegs2);
+                                                players[Character.getNumericValue(tempId2.charAt(0))-1].setHome(tempHome2);
+                                            }
+
+                                            tempFields[players[Character.getNumericValue(id.charAt(0))-1].getFinishField()].setPegOnField(id);
+                                            tempFields[players[Character.getNumericValue(id.charAt(0))-1].getFinishField()].setEmpty(false);
+                                            pegInFinish = true;
+                                        }
+                                    }
+                                }
                                 //tempFields[(i + steps) % tempFields.length].setPegOnField("");
                                 //tempFields[(i + steps) % tempFields.length].setEmpty(true);
-
-                                tempFinish1.addPeg(id);
-
-                                pegInHome = true;
                             }
                         }
                     }
 
-                    if (!pegInHome){
+                    tempId2 = tempFields[(i + steps) % tempFields.length].getPegOnField();
+                    tempPegs2 = players[Character.getNumericValue(tempId2.charAt(0))-1].getPegs();
+                    tempHome2 = players[Character.getNumericValue(tempId2.charAt(0))-1].getHome();
+
+                    if (!pegInFinish){
                         for (Peg peg : tempPegs2) {
                             if (peg.getId().equals(tempId2)) {
                                 peg.setState("h");
@@ -157,7 +196,7 @@ public class Main {
 
                         tempHome2.addPeg(tempId2);
 
-                        tempFields[(i + steps) % tempFields.length].setPegOnField(tempId2);
+                        tempFields[(i + steps) % tempFields.length].setPegOnField(id);
                         tempFields[(i + steps) % tempFields.length].setEmpty(false);
                     }
 
@@ -167,23 +206,100 @@ public class Main {
                     players[Character.getNumericValue(tempId2.charAt(0))-1].setPegs(tempPegs2);
                     players[Character.getNumericValue(tempId2.charAt(0))-1].setHome(tempHome2);
                 } else if (tempFields[(i + steps) % tempFields.length].isEmpty()){
-                    tempFields[(i + steps) % tempFields.length].setPegOnField(id);
-                    tempFields[(i + steps) % tempFields.length].setEmpty(false);
 
                     tempPegs1 = players[Character.getNumericValue(id.charAt(0))-1].getPegs();
                     tempFinish1 = players[Character.getNumericValue(id.charAt(0))-1].getFinish();
                     for (Peg peg : tempPegs1) {
-                        System.out.println(peg.getId());
-                        System.out.println(id);
                         if (peg.getId().equals(id)) {
+                            tempSteps = peg.getTotalSteps() + steps;
                             peg.setTotalSteps(peg.getTotalSteps() + steps);
-                            System.out.println(peg.getTotalSteps());
-                            if (peg.getTotalSteps() >= peg.getSTEPSTOGO()){
-                                peg.setState("f");
-                                tempFields[(i + steps) % tempFields.length].setPegOnField("");
-                                tempFields[(i + steps) % tempFields.length].setEmpty(true);
+                            if (tempSteps > peg.getSTEPSTOGO()){
+                                peg.setTotalSteps(peg.getSTEPSTOGO());
+                                index = tempSteps - peg.getTotalSteps() - 1;
+                                if(index < 4){
+                                    tempFields[i].setPegOnField("");
+                                    tempFields[i].setEmpty(true);
 
-                                tempFinish1.addPeg(id);
+                                    tempFields[(i + steps) % tempFields.length].setPegOnField("");
+                                    tempFields[(i + steps) % tempFields.length].setEmpty(true);
+
+                                    for (int j = 0; j < players[Character.getNumericValue(id.charAt(0))-1].getFinish().getPegsIds().length; j++){
+                                        if(players[Character.getNumericValue(id.charAt(0))-1].getFinish().getPegsIds()[j] == null && j == index){
+                                            peg.setState("f");
+                                            //tempFields[players[Character.getNumericValue(id.charAt(0))-1].getFinishField()].setPegOnField("");
+                                            //tempFields[players[Character.getNumericValue(id.charAt(0))-1].getFinishField()].setEmpty(true);
+
+                                            tempFinish1.addPeg(id,index);
+                                        } else if(players[Character.getNumericValue(id.charAt(0))-1].getFinish().getPegsIds()[j] != null && j == index){
+                                            tempId2 = tempFields[players[Character.getNumericValue(id.charAt(0))-1].getFinishField()].getPegOnField();
+                                            if(!tempId2.equals(id)){
+                                                tempFields[(i + steps) % tempFields.length].setPegOnField("");
+                                                tempFields[(i + steps) % tempFields.length].setEmpty(true);
+
+                                                if (!tempId2.equals("")){
+                                                    tempPegs2 = players[Character.getNumericValue(tempId2.charAt(0))-1].getPegs();
+                                                    tempHome2 = players[Character.getNumericValue(tempId2.charAt(0))-1].getHome();
+
+                                                    for (Peg peg1 : tempPegs2) {
+                                                        if (peg1.getId().equals(tempId2)) {
+                                                            peg1.setState("h");
+                                                            peg1.setTotalSteps(0);
+                                                        }
+                                                    }
+
+                                                    tempHome2.addPeg(tempId2);
+
+                                                    players[Character.getNumericValue(tempId2.charAt(0))-1].setPegs(tempPegs2);
+                                                    players[Character.getNumericValue(tempId2.charAt(0))-1].setHome(tempHome2);
+                                                }
+
+                                                peg.setState("r");
+                                                tempFields[players[Character.getNumericValue(id.charAt(0))-1].getFinishField()].setPegOnField(id);
+                                                tempFields[players[Character.getNumericValue(id.charAt(0))-1].getFinishField()].setEmpty(false);
+                                            }
+                                        }
+                                    }
+
+                                } else {
+                                    //tempFields[(i + steps) % tempFields.length].setPegOnField("");
+                                    //tempFields[(i + steps) % tempFields.length].setEmpty(true);
+                                    tempId2 = tempFields[players[Character.getNumericValue(id.charAt(0))-1].getFinishField()].getPegOnField();
+
+
+                                    if(!tempId2.equals("")){
+                                        tempPegs2 = players[Character.getNumericValue(tempId2.charAt(0))-1].getPegs();
+                                        tempHome2 = players[Character.getNumericValue(tempId2.charAt(0))-1].getHome();
+                                        if(!tempId2.equals(id)){
+                                            for (Peg peg1 : tempPegs2) {
+                                                if (peg1.getId().equals(tempId2)) {
+                                                    peg1.setState("h");
+                                                    peg1.setTotalSteps(0);
+                                                }
+                                            }
+
+                                            players[Character.getNumericValue(tempId2.charAt(0))-1].setPegs(tempPegs2);
+                                            players[Character.getNumericValue(tempId2.charAt(0))-1].setHome(tempHome2);
+
+                                        }
+                                    }
+
+                                    tempFields[i].setPegOnField("");
+                                    tempFields[i].setEmpty(true);
+
+                                    peg.setState("r");
+                                    tempFields[players[Character.getNumericValue(id.charAt(0))-1].getFinishField()].setPegOnField(id);
+                                    tempFields[players[Character.getNumericValue(id.charAt(0))-1].getFinishField()].setEmpty(false);
+
+                                }
+                                //peg.setState("f");
+
+                                //tempFinish1.addPeg(id);
+                            } else {
+                                tempFields[(i + steps) % tempFields.length].setPegOnField(id);
+                                tempFields[(i + steps) % tempFields.length].setEmpty(false);
+
+                                tempFields[i].setPegOnField("");
+                                tempFields[i].setEmpty(true);
                             }
                         }
                     }

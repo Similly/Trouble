@@ -14,13 +14,8 @@ public class Finish {
 
     }
 
-    public void addPeg(String id){
-        for (int i = 0 ; i < pegsIds.length ; i++) {
-            if(pegsIds[i] == null){
-                pegsIds[i] = id;
-                break;
-            }
-        }
+    public void addPeg(String id, int index){
+        pegsIds[index] = id;
     }
 
     public String[] getPegsIds() {
