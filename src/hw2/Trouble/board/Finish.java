@@ -1,7 +1,5 @@
 package hw2.Trouble.board;
 
-import hw2.Trouble.player.Peg;
-
 public class Finish {
 
     private String[] pegsIds;
@@ -10,10 +8,9 @@ public class Finish {
         pegsIds = new String[4];
     }
 
-    public void removePeg(){
-
-    }
-
+    /*
+    * Adds Peg to the finish section at the index i
+     */
     public void addPeg(String id, int index){
         pegsIds[index] = id;
     }

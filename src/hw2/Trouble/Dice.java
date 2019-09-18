@@ -10,6 +10,9 @@ public class Dice {
         r = new Random();
     }
 
+    /*
+    * Returns a random number between 1 and 6
+     */
     public int rollIt(){
         int temp = r.nextInt(6);
         return temp + 1;

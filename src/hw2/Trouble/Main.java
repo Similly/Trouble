@@ -41,11 +41,15 @@ public class Main {
         }
 
     }
-
+    /*
+    * Initializes the game
+    * Asks for the amount of players
+    * sets up the initial board and prints it
+     */
     public static void init(){
 
         System.out.println("+++ Welcome to Trouble! +++\n" +
-                "Please enter amount of players:");
+                "Please enter amount of players(1-4):");
         in0 = new Scanner(System.in);
         amountOfPlayers = in0.nextInt();
 
@@ -60,6 +64,12 @@ public class Main {
         board.printBoard(players);
     }
 
+    /*
+    * Rolls the dice
+    * Decides if the rolled number is a 6 or not
+    * If it's a six and the player still has pegs in his Home than the tryPutNewPegOnBoard() function gets called
+    * If it's not a six or the player has no pegs left in his home the move() function gets called
+     */
     public static void turn(Player player){
         System.out.println("It's the turn of Player" + player.getId() + "!\n" +
                 "Please enter any Character to roll the dice!");
@@ -108,6 +118,11 @@ public class Main {
         }
     }
 
+    /*
+    * Moves the selected peg for the rolled number
+    * If the destination field is occupied than it removes the peg there and puts it back in its home
+    * If the peg completed on round around the board than this function tries to put it in the finish section
+     */
     public static void move(String id, int steps, Field[] tempFields){
 
         Peg[] tempPegs1;
@@ -313,6 +328,9 @@ public class Main {
         board.setFields(tempFields);
     }
 
+    /*
+    * Checks if a player still has a Peg left in his home
+     */
     public static boolean pegLeftInHome(Player player){
         boolean pegLeftInHome = false;
         for (int i = 0 ; i < player.getHome().getPegsIds().length ; i++) {
@@ -324,6 +342,9 @@ public class Main {
         return pegLeftInHome;
     }
 
+    /*
+    * Tries to put a new peg on board if a player still has pegs left in his home
+     */
     public static void tryPutNewPegOnBoard(Player player, Field[] tempFields, Peg[] tempPegs, Home tempHome, int rolledNumber){
         for (int i = 0 ; i < player.getHome().getPegsIds().length ; i++){
             if (player.getHome().getPegsIds()[i] != null && tempFields[player.getStartingField()].isEmpty()){
@@ -389,6 +410,9 @@ public class Main {
         board.setFields(tempFields);
     }
 
+    /*
+    * Checks if a player has at least one Peg on the board
+     */
     public static boolean checkIfPlayerHasPegOnBoard(Player player){
 
         for (int i = 0 ; i < player.getPegs().length ; i++){
@@ -400,6 +424,9 @@ public class Main {
         return false;
     }
 
+    /*
+    * Return an ArrayList of Pegs on the board by a specific player
+     */
     public static ArrayList<String> getAvailablePegs(Player player){
         ArrayList<String> tempAvailablePegs = new ArrayList<>();
 
@@ -412,10 +439,17 @@ public class Main {
         return tempAvailablePegs;
     }
 
+    /*
+    * Checks if field is occupied by an opponents Peg
+     */
     public static boolean checkForOpponentPegs(Player player, Field field){
         return Character.getNumericValue(field.getPegOnField().charAt(0)) != player.getId();
     }
 
+
+    /*
+    * Checks if there is a player with all four Pegs in the finish section
+     */
     public static boolean checkForWinner(Player player){
         for (int i = 0; i < player.getPegs().length; i++){
             if (!player.getPegs()[i].getState().equals("f")){

@@ -14,10 +14,16 @@ public class Home {
         }
     }
 
+    /*
+    * remove the Peg at index i from home
+     */
     public void removePeg(int i){
         pegsIds[i] = null;
     }
 
+    /*
+    * Adds a Peg at an empty spot in the array
+     */
     public void addPeg(String id){
         for (int i = 0 ; i < pegsIds.length ; i++) {
             if(pegsIds[i] == null){

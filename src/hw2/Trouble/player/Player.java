@@ -12,6 +12,9 @@ public class Player {
     private int startingField;
     private int finishField;
 
+    /*
+    * When a player object is created it gets an individual id, home, finish, array of four pegs, starting field and finish field
+     */
     public Player(int id){
         this.id = id;
 

@@ -7,6 +7,9 @@ public class Board {
 
     private Field[] fields;
 
+    /*
+    * The board is represented by an array of 28 fields
+     */
     public Board(){
         fields = new Field[28];
         for(int i = 0 ; i < fields.length ; i++){
@@ -22,14 +25,13 @@ public class Board {
         return fields;
     }
 
+    /*
+    * prints the board and the home and finish section of each player
+     */
     public void printBoard(Player[] players){
-        /*for (int i = 0 ; i < fields.length ; i++) {
-            if(fields[i].isEmpty()){
-                System.out.print("(   )");
-            } else {
-                System.out.print("(" + fields[i].getPegOnField() + ")");
-            }
-        }*/
+
+        System.out.println("\n*************************************************\n");
+
         for (int i = 14 ; i < 22 ; i++) {
             if (fields[i].isEmpty()) {
                 System.out.print("(   )");
@@ -90,5 +92,8 @@ public class Board {
             }
             System.out.println("\n");
         }
+
+        System.out.println("\n*************************************************\n");
+
     }
 }
