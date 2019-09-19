@@ -25,7 +25,11 @@ public class Main {
 
     public static void main(String[] args) {
 
-        init();
+        /*
+        * To run the game, run the following code
+         */
+
+        init(false);
 
         turn = 0;
         while (true) {
@@ -40,18 +44,33 @@ public class Main {
                 turn++;
         }
 
+
+        /* Test Cases
+        * Comment the code to run the game and uncomment the test function you want to print.
+        * */
+
+        //testPrintBoard();
+        //testInit();
+        //testRollTheDice();
+        //testTryPutNewPegOnBoard(3);
+
     }
+
     /*
     * Initializes the game
     * Asks for the amount of players
     * sets up the initial board and prints it
      */
-    public static void init(){
+    public static void init(Boolean testCase){
 
-        System.out.println("+++ Welcome to Trouble! +++\n" +
-                "Please enter amount of players(1-4):");
-        in0 = new Scanner(System.in);
-        amountOfPlayers = in0.nextInt();
+        if (!testCase){
+            System.out.println("+++ Welcome to Trouble! +++\n" +
+                    "Please enter amount of players(1-4):");
+            in0 = new Scanner(System.in);
+            amountOfPlayers = in0.nextInt();
+        }else if(testCase){
+            amountOfPlayers = 4;
+        }
 
         board = new Board();
         players = new Player[amountOfPlayers];
@@ -81,6 +100,7 @@ public class Main {
         Home tempHome = player.getHome();
         Boolean pegLeftInHome = false;
 
+        //Rolls the dice
         if(temp.equals(temp)){
             rolledNumber = dice.rollIt();
             System.out.println("You rolled a " + rolledNumber + "!");
@@ -88,6 +108,7 @@ public class Main {
 
         pegLeftInHome = pegLeftInHome(player);
 
+        //Decides if a new peg has to be set on board or not
         if (pegLeftInHome && rolledNumber == 6){
             tryPutNewPegOnBoard(player, tempFields, tempPegs, tempHome, rolledNumber);
         } else {
@@ -113,6 +134,7 @@ public class Main {
         }
         board.printBoard(players);
 
+        //If the rolled number was a six the player gets another turn
         if (rolledNumber == 6){
             turn(player);
         }
@@ -140,9 +162,9 @@ public class Main {
         for (int i = 0 ; i < board.getFields().length ; i++){
             //System.out.println(id + " " + i + " " + tempFields[i].getPegOnField());
 
+            //gets the field the selected peg is on
             if(tempFields[i].getPegOnField().equals(id)){
-                //tempFields[i].setPegOnField("");
-                //tempFields[i].setEmpty(true);
+                //If the next field is not empty the following code is executed
                 if (!tempFields[(i + steps) % tempFields.length].isEmpty()){
                     tempFields[i].setPegOnField("");
                     tempFields[i].setEmpty(true);
@@ -153,6 +175,7 @@ public class Main {
                         if (peg.getId().equals(id)) {
                             tempSteps = peg.getTotalSteps() + steps;
                             peg.setTotalSteps(peg.getTotalSteps() + steps);
+                            //Checks if the peg can move into the finish section
                             if (tempSteps > peg.getSTEPSTOGO()){
                                 peg.setTotalSteps(peg.getSTEPSTOGO());
                                 index = tempSteps - peg.getTotalSteps() - 1;
@@ -220,6 +243,8 @@ public class Main {
 
                     players[Character.getNumericValue(tempId2.charAt(0))-1].setPegs(tempPegs2);
                     players[Character.getNumericValue(tempId2.charAt(0))-1].setHome(tempHome2);
+
+                    //If the next field is not empty the following code is executed
                 } else if (tempFields[(i + steps) % tempFields.length].isEmpty()){
 
                     tempPegs1 = players[Character.getNumericValue(id.charAt(0))-1].getPegs();
@@ -231,6 +256,7 @@ public class Main {
                             if (tempSteps > peg.getSTEPSTOGO()){
                                 peg.setTotalSteps(peg.getSTEPSTOGO());
                                 index = tempSteps - peg.getTotalSteps() - 1;
+                                //Checks if the peg can move into home
                                 if(index < 4){
                                     tempFields[i].setPegOnField("");
                                     tempFields[i].setEmpty(true);
@@ -241,8 +267,6 @@ public class Main {
                                     for (int j = 0; j < players[Character.getNumericValue(id.charAt(0))-1].getFinish().getPegsIds().length; j++){
                                         if(players[Character.getNumericValue(id.charAt(0))-1].getFinish().getPegsIds()[j] == null && j == index){
                                             peg.setState("f");
-                                            //tempFields[players[Character.getNumericValue(id.charAt(0))-1].getFinishField()].setPegOnField("");
-                                            //tempFields[players[Character.getNumericValue(id.charAt(0))-1].getFinishField()].setEmpty(true);
 
                                             tempFinish1.addPeg(id,index);
                                         } else if(players[Character.getNumericValue(id.charAt(0))-1].getFinish().getPegsIds()[j] != null && j == index){
@@ -276,8 +300,6 @@ public class Main {
                                     }
 
                                 } else {
-                                    //tempFields[(i + steps) % tempFields.length].setPegOnField("");
-                                    //tempFields[(i + steps) % tempFields.length].setEmpty(true);
                                     tempId2 = tempFields[players[Character.getNumericValue(id.charAt(0))-1].getFinishField()].getPegOnField();
 
 
@@ -306,9 +328,6 @@ public class Main {
                                     tempFields[players[Character.getNumericValue(id.charAt(0))-1].getFinishField()].setEmpty(false);
 
                                 }
-                                //peg.setState("f");
-
-                                //tempFinish1.addPeg(id);
                             } else {
                                 tempFields[(i + steps) % tempFields.length].setPegOnField(id);
                                 tempFields[(i + steps) % tempFields.length].setEmpty(false);
@@ -459,4 +478,53 @@ public class Main {
         return true;
     }
 
+
+
+    /*
+    * The following functions are only for testing purposes.
+    * Just run them inside the main to test the case.
+     */
+
+
+    /*
+    * Test if an empty board can be printed.
+     */
+    public static void testPrintBoard(){
+        Board board = new Board();
+        board.printBoard();
+        System.out.println("Empty board printed successfully!");
+    }
+
+    /*
+    * Test if a game of four players can be initialized.
+     */
+    public static void testInit(){
+        init(true);
+        System.out.println("Game successfully initialized!");
+    }
+
+    /*
+    * Test if a peg of a player can be put from the Home on the board.
+     */
+    public static void testTryPutNewPegOnBoard(int player){
+
+
+        init(true);
+        Peg[] tempPegs = players[player-1].getPegs();
+        Home tempHome = players[player-1].getHome();
+        Field[] tempFields = board.getFields();
+
+        tryPutNewPegOnBoard(players[player-1],tempFields,tempPegs,tempHome,6);
+        board.printBoard(players);
+    }
+
+    /*
+    * Prints n array of 30 random numbers between 1 and 6.
+     */
+    public static void testRollTheDice(){
+        Dice dice = new Dice();
+        for (int i = 0; i < 30; i++){
+            System.out.print(dice.rollIt() + " ");
+        }
+    }
 }
