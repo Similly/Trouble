@@ -9,6 +9,10 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
+
+/*
+* I used JUnit 4 for testing.
+ */
 public class MainTest {
 
     /*
