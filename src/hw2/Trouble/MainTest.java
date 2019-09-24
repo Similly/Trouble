@@ -34,7 +34,7 @@ public class MainTest {
             works = false;
         }
 
-        System.out.println("chekIfPlayerHasPegOnBoard works: " + works);
+        System.out.println("checkIfPlayerHasPegOnBoard works: " + works);
     }
 
     /*
